@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b04ca918-484b-4d49-b9b8-4baf35edebab</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.GrpcNetClient" Version="1.0.0-rc9.11" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="1.0.0-alpha.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	<PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.4.0-rc.2" />
+	<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.4.0-rc.2" />
+	<PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol.Logs" Version="1.4.0-rc.2" />
+	<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.4.0-rc.2" />
+	<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.11" />
+	<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.11" />
+	<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.1.0-beta.3" />
+	<PackageReference Include="Google.Protobuf" Version="3.21.12" />
+	<PackageReference Include="Grpc.Net.Client" Version="2.51.0" />
+	<PackageReference Include="Grpc.Tools" Version="2.52.0-pre1">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+  </ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
+	</ItemGroup>
+
+</Project>

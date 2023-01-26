@@ -1,0 +1,74 @@
+# overall config
+# ref: https://www.meziantou.net/monitoring-a-dotnet-application-using-opentelemetry.htm#starting-the-collect
+
+# please note that at the time of this writing, logs were still in beta and not stable, 
+# so just letting the config here for future reference
+# ref: https://opentelemetry.io/docs/instrumentation/net/#status-and-releases
+
+# also there's an initiative to create a serilog sink for open telemetry protocol
+# https://github.com/serilog/serilog-sinks-opentelemetry
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+exporters:
+  jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+
+  prometheus:
+    endpoint: "0.0.0.0:8890"
+
+  # https://grafana.com/docs/opentelemetry/collector/send-logs-to-loki/
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+    tls:
+      insecure: true
+
+  logging: # log to the console
+    loglevel: debug
+
+processors:
+  batch:
+
+  attributes:
+    actions:
+    - action: insert
+      key: traceid
+      from_attribute: TraceId
+    - action: insert
+      key: loki.attribute.labels
+      value: traceid
+
+    #- action: insert
+    #  key: severity
+    #  from_attribute: severity
+    #- action: insert
+    #  key: loki.attribute.labels
+    #  value: severity
+
+  
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [pprof, zpages, health_check]
+  pipelines:
+    traces:
+      receivers: [otlp] 
+      exporters: [jaeger, logging] 
+      processors: [batch]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus, logging]
+    logs:
+      receivers: [otlp]
+      processors: [attributes] 
+      exporters: [loki, logging] 

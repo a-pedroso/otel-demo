@@ -1,0 +1,107 @@
+version: '3.4'
+
+services:
+  webapi:
+    image: ${DOCKER_REGISTRY-}webapi
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - 5200:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "GrpcService__Uri=http://host.docker.internal:5262"
+      - "OpenTelemetryConfig__Enabled=true"
+      - "OpenTelemetryConfig__OtlpExporter__AgentUrl=http://webapi-otel-collector:4417"
+
+  grpcservice:
+    image: ${DOCKER_REGISTRY-}grpcservice
+    build:
+      context: .
+      dockerfile: GrpcService/Dockerfile
+    ports:
+      - 5262:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "OpenTelemetryConfig__Enabled=true"
+      - "OpenTelemetryConfig__OtlpExporter__AgentUrl=http://grpcservice-otel-collector:4317"
+
+  webapi-otel-collector:
+    container_name: "webapi-otel-collector"
+    image: otel/opentelemetry-collector-contrib:0.64.1
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./otel-collector/webapi-otel-collector-config.yml:/etc/otel-collector-config.yml
+      - ./.otel-output:/etc/output:rw # Store the logs
+    ports:
+      - "1888:1888"   # pprof extension
+      - "8888:8888"   # Prometheus metrics exposed by the collector itself
+      - "8889:8889"   # Prometheus exporter metrics (received application metrics)
+      - "13133:13133" # health_check extension
+      - "9411"        # Zipkin receiver
+      - "55679:55679" # zpages extension
+      - "4417:4417"   # OTLP gRPC receiver
+    depends_on:
+      - jaeger
+      - loki
+
+  grpcservice-otel-collector:
+    container_name: "grpcservice-otel-collector"
+    image: otel/opentelemetry-collector-contrib:0.64.1
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./otel-collector/grpcservice-otel-collector-config.yml:/etc/otel-collector-config.yml
+      - ./.otel-output:/etc/output:rw # Store the logs
+    ports:
+      - "1889:1888"   # pprof extension
+      - "8887:8888"   # Prometheus metrics exposed by the collector itself
+      - "8890:8890"   # Prometheus exporter metrics (received application metrics)
+      - "13134:13133" # health_check extension
+      - "9412"        # Zipkin receiver
+      - "55680:55679" # zpages extension
+      - "4317:4317"   # OTLP gRPC receiver
+    depends_on:
+      - jaeger
+      - loki
+
+  jaeger:
+    container_name: jaeger
+    image: jaegertracing/all-in-one:1.39
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    restart: unless-stopped
+    ports:
+      - 16686:16686 #ui
+      - 14250:14250
+
+  loki:
+    container_name: loki
+    image: grafana/loki:2.7.1
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  prometheus:
+    container_name: "prometheus"
+    image: prom/prometheus:v2.40.1
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:8.5.15
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    depends_on:
+      - loki
+      - prometheus
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards

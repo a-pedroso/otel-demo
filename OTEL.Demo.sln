@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{03139A23-BF0C-4851-9DF6-BB1A16E8344D}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{079C9485-5B52-4A46-B69D-F0B532A642F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcService", "GrpcService\GrpcService.csproj", "{04904186-0CF6-4B41-800B-52D16834C4F3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "otel-collector", "otel-collector", "{D323C841-38E4-47A8-81AF-C78B5C237ECF}"
+	ProjectSection(SolutionItems) = preProject
+		otel-collector\grpcservice-otel-collector-config.yml = otel-collector\grpcservice-otel-collector-config.yml
+		otel-collector\webapi-otel-collector-config.yml = otel-collector\webapi-otel-collector-config.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "prometheus", "prometheus", "{6D79DFF7-20C0-4B19-97E9-35786884A8D6}"
+	ProjectSection(SolutionItems) = preProject
+		prometheus\prometheus.yml = prometheus\prometheus.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03139A23-BF0C-4851-9DF6-BB1A16E8344D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03139A23-BF0C-4851-9DF6-BB1A16E8344D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03139A23-BF0C-4851-9DF6-BB1A16E8344D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03139A23-BF0C-4851-9DF6-BB1A16E8344D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{079C9485-5B52-4A46-B69D-F0B532A642F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{079C9485-5B52-4A46-B69D-F0B532A642F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{079C9485-5B52-4A46-B69D-F0B532A642F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{079C9485-5B52-4A46-B69D-F0B532A642F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04904186-0CF6-4B41-800B-52D16834C4F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04904186-0CF6-4B41-800B-52D16834C4F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04904186-0CF6-4B41-800B-52D16834C4F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04904186-0CF6-4B41-800B-52D16834C4F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED36C2AD-E0D0-4E09-AAA6-59E293B971A3}
+	EndGlobalSection
+EndGlobal
