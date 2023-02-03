@@ -2,6 +2,7 @@ using GrpcService.Extensions;
 using GrpcService.Services;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
+using StackExchange.Redis;
 
 using var loggerFactory = LoggerFactory.Create(builder =>
 {
@@ -22,6 +23,11 @@ try
     builder.SetupLogging();
 
     // Add services to the container.
+
+    // https://stackoverflow.com/questions/72621827/redis-cache-calls-in-opentelemetry-in-dotnet
+    IConnectionMultiplexer redisConnectionMultiplexer = await ConnectionMultiplexer.ConnectAsync("" + builder.Configuration.GetConnectionString("Redis"));
+    builder.Services.AddSingleton(redisConnectionMultiplexer);
+
     builder.Services.AddOpenTelemetryExtension(builder.Configuration, builder.Environment);
 
     builder.Services.AddGrpc();

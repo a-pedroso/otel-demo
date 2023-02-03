@@ -25,6 +25,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "OpenTelemetryConfig__Enabled=true"
       - "OpenTelemetryConfig__OtlpExporter__AgentUrl=http://grpcservice-otel-collector:4317"
+      - "ConnectionStrings__Redis=host.docker.internal:6379"
 
   webapi-otel-collector:
     container_name: "webapi-otel-collector"
@@ -105,3 +106,27 @@ services:
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
+
+  redis:
+    container_name: redis
+    image: redis:7.0.5
+    hostname: redis-host
+    ports:
+      - 6379:6379
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+
+  redis-commander:
+    container_name: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - 8081:8081
+    depends_on:
+      - redis
+
+volumes:
+  redis-data:

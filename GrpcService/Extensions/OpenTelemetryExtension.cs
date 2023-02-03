@@ -29,7 +29,7 @@ public static class OpenTelemetryExtension
                 serviceInstanceId: Environment.MachineName))
             .WithTracing(tracing => tracing
                 .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
+                .AddRedisInstrumentation()
                 //.AddConsoleExporter()
                 .AddOtlpExporter(o =>
                 {
@@ -37,7 +37,6 @@ public static class OpenTelemetryExtension
                 }))
             .WithMetrics(metrics => metrics
                 .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
                 .AddRuntimeInstrumentation()
                 //.AddConsoleExporter()
                 .AddOtlpExporter(o =>
